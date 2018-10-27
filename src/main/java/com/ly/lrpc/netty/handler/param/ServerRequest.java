@@ -4,6 +4,7 @@ public class ServerRequest {
 
     private long id;
     private Object content;
+    private String command;
 
     public long getId() {
         return id;
@@ -19,5 +20,13 @@ public class ServerRequest {
 
     public void setContent(Object content) {
         this.content = content;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
     }
 }
