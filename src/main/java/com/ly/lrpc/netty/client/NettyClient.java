@@ -13,11 +13,14 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.AttributeKey;
+
+import java.util.Objects;
 
 public class NettyClient {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
 
 
 
@@ -45,9 +48,8 @@ public class NettyClient {
             f.channel().writeAndFlush("\r\n");
             // Wait until the connection is closed.
             f.channel().closeFuture().sync();
-        }
-        catch (Exception e){
-            e.printStackTrace();
+            Object result = f.channel().attr(AttributeKey.valueOf("ssss")).get();
+            System.out.println("收到服务器返回的数据==="+result.toString());
         }finally{
             workerGroup.shutdownGracefully();
         }

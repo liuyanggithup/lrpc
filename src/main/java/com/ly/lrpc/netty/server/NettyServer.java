@@ -15,10 +15,12 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
 
 import java.net.InetAddress;
+import java.util.concurrent.TimeUnit;
 
 public class NettyServer {
 
@@ -40,6 +42,7 @@ public class NettyServer {
 
                             ch.pipeline().addLast(new DelimiterBasedFrameDecoder(65535,Delimiters.lineDelimiter()[0]));
                             ch.pipeline().addLast(new StringDecoder());
+                            ch.pipeline().addLast(new IdleStateHandler(6,4,2,TimeUnit.SECONDS));
                             ch.pipeline().addLast(new SimpleServerHandle());
                             ch.pipeline().addLast(new StringEncoder());
 
