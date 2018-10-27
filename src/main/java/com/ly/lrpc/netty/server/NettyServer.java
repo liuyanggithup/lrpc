@@ -1,5 +1,7 @@
 package com.ly.lrpc.netty.server;
 
+import com.ly.lrpc.netty.constant.Constants;
+import com.ly.lrpc.netty.factory.ZookeeperFactory;
 import com.ly.lrpc.netty.handler.SimpleServerHandle;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -13,6 +15,10 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.zookeeper.CreateMode;
+
+import java.net.InetAddress;
 
 public class NettyServer {
 
@@ -41,6 +47,10 @@ public class NettyServer {
                     });
 
             ChannelFuture f = bootstrap.bind(8081).sync();
+            CuratorFramework client = ZookeeperFactory.create();
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            client.create().withMode(CreateMode.EPHEMERAL)
+                    .forPath(Constants.SERVER_PATH+inetAddress.getHostAddress());
             f.channel().closeFuture().sync();
         }catch (Exception e){
             e.printStackTrace();
