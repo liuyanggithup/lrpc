@@ -2,7 +2,7 @@ package com.ly.lrpc.netty.server;
 
 import com.ly.lrpc.netty.constant.Constants;
 import com.ly.lrpc.netty.factory.ZookeeperFactory;
-import com.ly.lrpc.netty.handler.SimpleServerHandle;
+import com.ly.lrpc.netty.handler.SimpleServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -43,7 +43,7 @@ public class NettyServer {
                             ch.pipeline().addLast(new DelimiterBasedFrameDecoder(65535,Delimiters.lineDelimiter()[0]));
                             ch.pipeline().addLast(new StringDecoder());
                             ch.pipeline().addLast(new IdleStateHandler(6,4,2,TimeUnit.SECONDS));
-                            ch.pipeline().addLast(new SimpleServerHandle());
+                            ch.pipeline().addLast(new SimpleServerHandler());
                             ch.pipeline().addLast(new StringEncoder());
 
                         }

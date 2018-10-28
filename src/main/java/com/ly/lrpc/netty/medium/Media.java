@@ -1,6 +1,7 @@
 package com.ly.lrpc.netty.medium;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ly.lrpc.netty.client.Response;
 import com.ly.lrpc.netty.handler.param.ServerRequest;
 import io.netty.handler.codec.json.JsonObjectDecoder;
 
@@ -29,9 +30,9 @@ public class Media {
         return m;
     }
 
-    public Object process(ServerRequest serverRequest){
+    public Response process(ServerRequest serverRequest){
 
-        Object result = null;
+        Response result = null;
         try{
             String command = serverRequest.getCommand();
             BeanMethod beanMethod = beanMap.get(command);
@@ -43,7 +44,8 @@ public class Media {
             Class<?> paramType = method.getParameterTypes()[0];
             Object content = serverRequest.getContent();
             Object args = JSONObject.parseObject(JSONObject.toJSONString(content), paramType);
-            result = method.invoke(bean, args);
+            result = (Response)method.invoke(bean, args);
+            result.setId(serverRequest.getId());
         }catch (Exception e){
             e.printStackTrace();
         }

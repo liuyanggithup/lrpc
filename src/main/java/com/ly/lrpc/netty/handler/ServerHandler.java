@@ -15,15 +15,9 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ServerRequest serverRequest = JSONObject.parseObject(msg.toString(), ServerRequest.class);
-
         Media media = Media.newInstance();
-        Object result = media.process(serverRequest);
-
-        System.out.println(serverRequest.getContent());
-        Response response = new Response();
-        response.setId(serverRequest.getId());
-        response.setResult("is ok");
-        ctx.channel().writeAndFlush(JSONObject.toJSONString(response));
+        Response result = media.process(serverRequest);
+        ctx.channel().writeAndFlush(JSONObject.toJSONString(result));
         ctx.channel().writeAndFlush("\r\n");
 
     }

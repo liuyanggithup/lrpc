@@ -2,7 +2,7 @@ package com.ly.lrpc.netty.init;
 
 import com.ly.lrpc.netty.constant.Constants;
 import com.ly.lrpc.netty.factory.ZookeeperFactory;
-import com.ly.lrpc.netty.handler.SimpleServerHandle;
+import com.ly.lrpc.netty.handler.ServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -18,8 +18,6 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -52,7 +50,7 @@ public class NettyInital implements ApplicationListener<ContextRefreshedEvent> {
                             ch.pipeline().addLast(new DelimiterBasedFrameDecoder(65535,Delimiters.lineDelimiter()[0]));
                             ch.pipeline().addLast(new StringDecoder());
                             ch.pipeline().addLast(new IdleStateHandler(6,4,2,TimeUnit.SECONDS));
-                            ch.pipeline().addLast(new SimpleServerHandle());
+                            ch.pipeline().addLast(new ServerHandler());
                             ch.pipeline().addLast(new StringEncoder());
 
                         }

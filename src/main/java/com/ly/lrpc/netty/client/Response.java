@@ -4,6 +4,8 @@ public class Response {
 
     private long id;
     private Object result;
+    private String code="0000";
+    private String message;
 
     public long getId() {
         return id;
@@ -19,5 +21,21 @@ public class Response {
 
     public void setResult(Object result) {
         this.result = result;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
