@@ -1,3 +1,4 @@
+import com.alibaba.fastjson.JSONObject;
 import com.ly.lrpc.netty.annotation.RemoteInvoke;
 import com.ly.lrpc.netty.client.Response;
 import com.ly.user.bean.User;
@@ -26,7 +27,7 @@ public class RemoteInvokeTest {
         user.setId(1);
         user.setName("zhangsan");
         Response response = userRemote.saveUser(user);
-        System.out.println(response);
+        System.out.println(JSONObject.toJSONString(response));
     }
 
 }
