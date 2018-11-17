@@ -14,22 +14,20 @@ public class ServerWatcher implements CuratorWatcher {
     public void process(WatchedEvent event) throws Exception {
         CuratorFramework clent = ZookeeperFactory.create();
         String path = event.getPath();
-        clent.getChildren().usingWatcher(this);
+        clent.getChildren().usingWatcher(this).forPath(path);
         List<String> serverPaths = clent.getChildren().forPath(path);
-        TcpClient.realServerPath = new HashSet<>();
-        ChannelManager.clear();
+        ChannelManager.realServerPath.clear();
         for (String serverPath:serverPaths){
-
             String[] strs = serverPath.split("#");
-            TcpClient.realServerPath.add(strs[0]+"#"+strs[1]);
-            ChannelFuture channelFuture = TcpClient.b.connect(strs[0], Integer.parseInt(strs[1]));
-
-            ChannelManager.addChannel(channelFuture);
-
-
+            ChannelManager.realServerPath.add(strs[0]+"#"+strs[1]);
         }
 
-
+        ChannelManager.clear();
+        for (String realServer:ChannelManager.realServerPath){
+            String[] strs = realServer.split("#");
+            ChannelFuture channelFuture = TcpClient.b.connect(strs[0], Integer.parseInt(strs[1]));
+            ChannelManager.addChannel(channelFuture);
+        }
 
     }
 }

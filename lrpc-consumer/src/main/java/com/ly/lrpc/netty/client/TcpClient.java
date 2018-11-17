@@ -28,7 +28,6 @@ public class TcpClient {
 
 
     static final Bootstrap b = new Bootstrap();
-    static Set<String> realServerPath = new HashSet<>();
     static ChannelFuture f = null;
     static {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -54,14 +53,14 @@ public class TcpClient {
             clent.getChildren().usingWatcher(watcher).forPath(Constants.SERVER_PATH);
             for (String serverPath:serverPaths){
                 String[] strs = serverPath.split("#");
-                realServerPath.add(strs[0]+"#"+strs[1]);
+                ChannelManager.realServerPath.add(strs[0]+"#"+strs[1]);
                 ChannelFuture channelFuture = TcpClient.b.connect(strs[0], Integer.parseInt(strs[1]));
                 ChannelManager.addChannel(channelFuture);
 
             }
 
-            if(realServerPath.size()>0){
-                String[] hostAndPort = realServerPath.toArray()[0].toString().split("#");
+            if(ChannelManager.realServerPath.size()>0){
+                String[] hostAndPort = ChannelManager.realServerPath.toArray()[0].toString().split("#");
                 host = hostAndPort[0];
                 port = Integer.parseInt(hostAndPort[1]);
             }
@@ -83,10 +82,9 @@ public class TcpClient {
 
     }
 
-    static  int i=0;
 
     public static Response send(ClientRequest request){
-        f = ChannelManager.get(i);
+        f = ChannelManager.get(ChannelManager.position);
         f.channel().writeAndFlush(JSONObject.toJSONString(request));
         f.channel().writeAndFlush("\r\n");
         DefaultFuture df = new DefaultFuture(request);
