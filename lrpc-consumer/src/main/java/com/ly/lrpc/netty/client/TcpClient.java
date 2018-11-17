@@ -53,11 +53,17 @@ public class TcpClient {
             CuratorWatcher watcher = new ServerWatcher();
             clent.getChildren().usingWatcher(watcher).forPath(Constants.SERVER_PATH);
             for (String serverPath:serverPaths){
-                realServerPath.add(serverPath.split("#")[0]);
+                String[] strs = serverPath.split("#");
+                realServerPath.add(strs[0]+"#"+strs[1]);
+                ChannelFuture channelFuture = TcpClient.b.connect(strs[0], Integer.parseInt(strs[1]));
+                ChannelManager.addChannel(channelFuture);
+
             }
 
             if(realServerPath.size()>0){
-                host = realServerPath.toArray()[0].toString();
+                String[] hostAndPort = realServerPath.toArray()[0].toString().split("#");
+                host = hostAndPort[0];
+                port = Integer.parseInt(hostAndPort[1]);
             }
 
         }catch (Exception e){
@@ -67,15 +73,20 @@ public class TcpClient {
 
         // Start the client.
         try {
-            f = b.connect(host, 8081).sync();
+
+
+
+            //f = b.connect(host, port).sync();
         }catch (Exception e){
             e.printStackTrace();
         }
 
     }
 
+    static  int i=0;
 
     public static Response send(ClientRequest request){
+        f = ChannelManager.get(i);
         f.channel().writeAndFlush(JSONObject.toJSONString(request));
         f.channel().writeAndFlush("\r\n");
         DefaultFuture df = new DefaultFuture(request);
