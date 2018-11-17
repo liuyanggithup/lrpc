@@ -52,9 +52,6 @@ public class TcpClient {
             List<String> serverPaths = clent.getChildren().forPath(Constants.SERVER_PATH);
             CuratorWatcher watcher = new ServerWatcher();
             clent.getChildren().usingWatcher(watcher).forPath(Constants.SERVER_PATH);
-
-
-
             for (String serverPath:serverPaths){
                 realServerPath.add(serverPath.split("#")[0]);
             }
