@@ -53,7 +53,7 @@ public class NettyServer {
             CuratorFramework client = ZookeeperFactory.create();
             InetAddress inetAddress = InetAddress.getLocalHost();
             client.create().withMode(CreateMode.EPHEMERAL)
-                    .forPath(Constants.SERVER_PATH+inetAddress.getHostAddress());
+                    .forPath(Constants.SERVER_PATH+"/"+inetAddress.getHostAddress());
             f.channel().closeFuture().sync();
         }catch (Exception e){
             e.printStackTrace();

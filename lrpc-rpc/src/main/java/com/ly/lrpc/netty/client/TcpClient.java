@@ -1,6 +1,7 @@
 package com.ly.lrpc.netty.client;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ly.lrpc.netty.factory.ZookeeperFactory;
 import com.ly.lrpc.netty.handler.SimpleClentHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -15,6 +16,7 @@ import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.AttributeKey;
+import org.apache.curator.framework.CuratorFramework;
 
 import java.util.Objects;
 
@@ -37,6 +39,8 @@ public class TcpClient {
                 ch.pipeline().addLast(new SimpleClentHandler());
             }
         });
+
+
 
         String host = "localhost";
         int port = 8080;

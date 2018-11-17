@@ -2,6 +2,8 @@ package com.ly.lrpc.netty.client;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ly.lrpc.netty.handler.SimpleClentHandler;
+import com.ly.lrpc.netty.zk.Constants;
+import com.ly.lrpc.netty.zk.ZookeeperFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -14,11 +16,19 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.CuratorWatcher;
+import org.apache.zookeeper.Watcher;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TcpClient {
 
 
     static final Bootstrap b = new Bootstrap();
+    static Set<String> realServerPath = new HashSet<>();
     static ChannelFuture f = null;
     static {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -35,11 +45,32 @@ public class TcpClient {
             }
         });
 
+        CuratorFramework clent = ZookeeperFactory.create();
         String host = "localhost";
         int port = 8080;
+        try{
+            List<String> serverPaths = clent.getChildren().forPath(Constants.SERVER_PATH);
+            CuratorWatcher watcher = new ServerWatcher();
+            clent.getChildren().usingWatcher(watcher).forPath(Constants.SERVER_PATH);
+
+
+
+            for (String serverPath:serverPaths){
+                realServerPath.add(serverPath.split("#")[0]);
+            }
+
+            if(realServerPath.size()>0){
+                host = realServerPath.toArray()[0].toString();
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
         // Start the client.
         try {
-            f = b.connect("127.0.0.1", 8081).sync();
+            f = b.connect(host, 8081).sync();
         }catch (Exception e){
             e.printStackTrace();
         }
